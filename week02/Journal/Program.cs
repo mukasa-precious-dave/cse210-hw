@@ -2,15 +2,15 @@ using System;
 
 class Program
 {
+    // Exceeding Requirements Note:
+    // 1. Implemented a unique custom delimiter (~|~) for file saving and loading to safely handle commas, quotes, and multi-line thoughts without breaking text parsing.
+    // 2. Added robust try-catch error handling in the Journal class to prevent application crashes on invalid file paths or read/write errors.
+    // 3. Expanded the prompt list beyond the mandatory minimum of five.
+
     static void Main(string[] args)
     {
-        // EXCEEDING REQUIREMENTS NOTE: 
-        // To exceed requirements, I implemented a custom custom separator (~|~) 
-        // and robust splitting logic to cleanly handle multi-line text entries and 
-        // prevent CSV comma/quote corruption without breaking file integrity.
-
         Journal theJournal = new Journal();
-        PromptGenerator promptGen = new PromptGenerator();
+        PromptGenerator promptGenerator = new PromptGenerator();
         int choice = 0;
 
         while (choice != 5)
@@ -18,31 +18,29 @@ class Program
             Console.WriteLine("Please select one of the following choices:");
             Console.WriteLine("1. Write a new entry");
             Console.WriteLine("2. Display the journal");
-            Console.WriteLine("3. Save the journal to a file");
-            Console.WriteLine("4. Load the journal from a file");
+            Console.WriteLine("3. Load the journal from file");
+            Console.WriteLine("4. Save the journal to file");
             Console.WriteLine("5. Quit");
             Console.Write("What would you like to do? ");
 
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out choice))
+            string userInput = Console.ReadLine();
+            if (int.TryParse(userInput, out choice))
             {
                 switch (choice)
                 {
-                    function:
                     case 1:
-                        string prompt = promptGen.GetRandomPrompt();
+                        string prompt = promptGenerator.GetRandomPrompt();
                         Console.WriteLine($"\n{prompt}");
                         Console.Write("> ");
-                        string response = Console.ReadLine();
-                        
-                        Entry newEntry = new Entry
-                        {
-                            _date = DateTime.Now.ToShortDateString(),
-                            _promptText = prompt,
-                            _entryText = response
-                        };
+                        string entryText = Console.ReadLine();
+
+                        Entry newEntry = new Entry();
+                        newEntry._date = DateTime.Now.ToShortDateString();
+                        newEntry._promptText = prompt;
+                        newEntry._entryText = entryText;
+
                         theJournal.AddEntry(newEntry);
-                        Console.WriteLine();
+                        Console.WriteLine("Entry added successfully!\n");
                         break;
 
                     case 2:
@@ -51,29 +49,29 @@ class Program
                         break;
 
                     case 3:
-                        Console.Write("Enter filename to save (e.g., journal.txt): ");
-                        string saveFile = Console.ReadLine();
-                        theJournal.SaveToFile(saveFile);
-                        break;
-
-                    case 4:
-                        Console.Write("Enter filename to load: ");
+                        Console.Write("\nWhat is the filename to load? ");
                         string loadFile = Console.ReadLine();
                         theJournal.LoadFromFile(loadFile);
                         break;
 
+                    case 4:
+                        Console.Write("\nWhat is the filename to save? ");
+                        string saveFile = Console.ReadLine();
+                        theJournal.SaveToFile(saveFile);
+                        break;
+
                     case 5:
-                        Console.WriteLine("Goodbye!");
+                        Console.WriteLine("\nGoodbye!");
                         break;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please enter a number between 1 and 5.\n");
+                        Console.WriteLine("\nInvalid choice. Please select a number between 1 and 5.\n");
                         break;
                 }
             }
             else
             {
-                Console.WriteLine("Invalid input. Please enter a valid number.\n");
+                Console.WriteLine("\nPlease enter a valid number.\n");
             }
         }
     }

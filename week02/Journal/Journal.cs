@@ -4,7 +4,7 @@ using System.IO;
 
 public class Journal
 {
-    private List<Entry> _entries = new List<Entry>();
+    public List<Entry> _entries = new List<Entry>();
 
     public void AddEntry(Entry newEntry)
     {
@@ -25,45 +25,56 @@ public class Journal
         }
     }
 
-    public void SaveToFile(string filename)
+    public void SaveToFile(string file)
     {
-        // Using a custom separator like ~|~ to avoid comma/quote conflicts
-        string separator = "~|~";
-        using (StreamWriter outputFile = new StreamWriter(filename))
+        try
         {
-            foreach (Entry entry in _entries)
+            using (StreamWriter outputFile = new StreamWriter(file))
             {
-                outputFile.WriteLine(entry.ToCsvString(separator));
+                foreach (Entry entry in _entries)
+                {
+                    outputFile.WriteLine($"{entry._date}~|~{entry._promptText}~|~{entry._entryText}");
+                }
             }
+            Console.WriteLine("Journal saved successfully!\n");
         }
-        Console.WriteLine("Journal successfully saved to file.\n");
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving file: {ex.Message}\n");
+        }
     }
 
-    public void LoadFromFile(string filename)
+    public void LoadFromFile(string file)
     {
-        if (!File.Exists(filename))
+        try
         {
-            Console.WriteLine("File not found.\n");
-            return;
-        }
-
-        _entries.Clear(); // Replace current entries
-        string[] lines = File.ReadAllLines(filename);
-
-        foreach (string line in lines)
-        {
-            string[] parts = line.Split(new string[] { "~|~" }, StringSplitOptions.None);
-            if (parts.Length >= 3)
+            if (!File.Exists(file))
             {
-                Entry entry = new Entry
-                {
-                    _date = parts[0],
-                    _promptText = parts[1],
-                    _entryText = parts[2]
-                };
-                _entries.Add(entry);
+                Console.WriteLine("File not found.\n");
+                return;
             }
+
+            _entries.Clear();
+            string[] lines = File.ReadAllLines(file);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split("~|~");
+
+                if (parts.Length >= 3)
+                {
+                    Entry entry = new Entry();
+                    entry._date = parts[0];
+                    entry._promptText = parts[1];
+                    entry._entryText = parts[2];
+                    _entries.Add(entry);
+                }
+            }
+            Console.WriteLine("Journal loaded successfully!\n");
         }
-        Console.WriteLine("Journal successfully loaded from file.\n");
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading file: {ex.Message}\n");
+        }
     }
 }
