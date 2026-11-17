@@ -3,12 +3,12 @@ using System;
 class Program
 {
     /* 
-     * EXCEEDING REQUIREMENTS NOTE:
+     * EXCEEDING CORE REQUIREMENTS:
      * 1. Non-Repeating Prompts & Questions: In both ReflectingActivity and ListingActivity, 
      *    items are removed from active lists as they are pulled so that random prompts/questions 
      *    are never duplicated until the entire bank has been exhausted.
      * 2. Session Tracking: A running log tracks how many times each activity was performed 
-     *    during the application's runtime and displays a session summary when exiting.
+     *    during the application's runtime and displays a summary report upon exiting.
      */
     static void Main(string[] args)
     {

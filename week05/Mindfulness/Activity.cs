@@ -31,7 +31,7 @@ public class Activity
         }
         else
         {
-            _duration = 30; // Default fallback
+            _duration = 30; // Fallback default
         }
 
         Console.Clear();
